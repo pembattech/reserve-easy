@@ -22,4 +22,14 @@ class VendorController extends Controller
 
     }
 
+    public function booking_management() {
+        return view('vendor.booking_mgmt');
+    }
+    public function vendor_profile() {
+        return view('vendor.vendor_profile');
+    }
+    public function vendor_setting() {
+        return view('vendor.vendor_setting');
+    }
+
 }
