@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Everest Hotel Booking</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            text-align: center;
+            color: #007BFF;
+            margin-bottom: 20px;
+        }
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            color: red;
+            font-size: 12px;
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Everest Hotel Booking</h1>
+    <form id="bookingForm" action="http://127.0.0.1:8000/booking/onlinebooking/everest1" method="GET" novalidate>
+        <label for="date">Booking Date:</label>
+        <input type="date" id="date" name="booking_date" required>
+        <div id="dateError" class="error"></div>
+
+        <label for="shift">Shift:</label>
+        <select id="shift" name="shift" required>
+            <option value="">Select shift</option>
+            <option value="morning">Morning</option>
+            <option value="evening">Evening</option>
+            <option value="whole_day">Whole Day</option>
+        </select>
+        <div id="shiftError" class="error"></div>
+
+        <label for="guest">Guest (Number):</label>
+        <input type="number" id="guest" name="guest" min="1" required>
+        <div id="guestError" class="error"></div>
+
+        <label for="type">Type:</label>
+        <select id="type" name="type" required>
+            <option value="">Select type</option>
+            <option value="wedding">Wedding</option>
+            <option value="birthday">Birthday</option>
+            <option value="corporate_event">Corporate Event</option>
+            <option value="other">Other</option>
+        </select>
+        <div id="typeError" class="error"></div>
+
+        <button type="submit">Send</button>
+    </form>
+
+    <script>
+        $(document).ready(function() {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            const minDate = `${yyyy}-${mm}-${dd}`;
+            $('#date').attr('min', minDate);
+
+            $('#bookingForm').on('submit', function(event) {
+                let isValid = true;
+
+                $('.error').text('');
+
+                const date = new Date($('#date').val());
+                if (!$('#date').val()) {
+                    $('#dateError').text('Please select a booking date.');
+                    isValid = false;
+                } else if (date < today) {
+                    $('#dateError').text('The booking date cannot be in the past.');
+                    isValid = false;
+                }
+
+                const shift = $('#shift').val();
+                if (!shift) {
+                    $('#shiftError').text('Please select a shift.');
+                    isValid = false;
+                }
+
+                const guest = $('#guest').val();
+                if (!guest || guest < 1) {
+                    $('#guestError').text('Please enter a valid number of guests.');
+                    isValid = false;
+                }
+
+                const type = $('#type').val();
+                if (!type) {
+                    $('#typeError').text('Please select an event type.');
+                    isValid = false;
+                }
+
+                if (!isValid) {
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

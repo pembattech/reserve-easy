@@ -30,19 +30,18 @@ Route::prefix('vendor')->group(function () {
     Route::post('/logout', [VendorAuthController::class, 'logout'])->name('vendor.logout');
 });
 
+
 Route::middleware('auth:vendor')->group(function () {
-    
+
     Route::get('/vendor', [VendorController::class, 'index'])->name('vendor.index'); //Admin site to view all the vendors.
     Route::get('/vendor/dashboard', [VendorController::class, 'show'])->name('vendor.dashboard');
     Route::get('/vendor/booking_management', [VendorController::class, 'booking_management'])->name('vendor.booking_management');
     Route::get('/vendor/profile', [VendorController::class, 'vendor_profile'])->name('vendor.vendor_profile');
     Route::get('/vendor/setting', [VendorController::class, 'vendor_setting'])->name('vendor.vendor_setting');
-
 });
 
-Route::prefix('booking')->group(function(){
-    Route::get('/onlinebooking', [BookingController::class, 'onlinebooking']);
-
+Route::prefix('booking')->group(function () {
+    Route::get('/onlinebooking/{vendor}', [BookingController::class, 'onlinebooking']);
     Route::get('/client', [ClientController::class, 'client']);
     Route::post('/clientstore', [ClientController::class, 'client_store'])->name('booking.clientstore');
     Route::post('/validate-otp', [ClientController::class, 'validateOtp'])->name('booking.otpvalidate');
@@ -52,4 +51,4 @@ Route::prefix('booking')->group(function(){
 
 
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
