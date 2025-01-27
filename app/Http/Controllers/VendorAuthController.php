@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Vendor;
+use App\Models\vendor_uniqid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -23,13 +24,30 @@ class VendorAuthController extends Controller
             'location' => 'required|string|max:255',
         ]);
 
-        Vendor::create([
+        $create_vendor = Vendor::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'location' => $request->location,
 
         ]);
+
+        if ($create_vendor) {
+
+            $vendorName = $request->name;
+            $uniqueId = $vendorName;
+            $counter = 1;
+
+            while (vendor_uniqid::where('unique_id', $uniqueId)->exists()) {
+                $uniqueId = $vendorName . $counter;
+                $counter++;
+            }
+
+            vendor_uniqid::create([
+                'vendor_id' => $create_vendor->id,
+                'unique_id' => $uniqueId,
+            ]);
+        }
 
         return redirect()->route('vendor.login')->with('success', 'Registration successful! Please login.');
     }
