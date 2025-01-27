@@ -33,8 +33,8 @@ class VendorAuthController extends Controller
         ]);
 
         if ($create_vendor) {
+            $vendorName = strtolower(str_replace(' ', '', $request->name));
 
-            $vendorName = $request->name;
             $uniqueId = $vendorName;
             $counter = 1;
 
@@ -47,9 +47,9 @@ class VendorAuthController extends Controller
                 'vendor_id' => $create_vendor->id,
                 'unique_id' => $uniqueId,
             ]);
-        }
 
-        return redirect()->route('vendor.login')->with('success', 'Registration successful! Please login.');
+            return redirect()->route('vendor.login')->with('success', 'Registration successful! Please login.');
+        }
     }
 
     public function showLoginForm()

@@ -9,6 +9,8 @@ class vendor_uniqid extends Model
 {
     use HasFactory;
 
+    protected $table = 'vendor_uniqid';
+
     protected $fillable = ['vendor_id', 'unique_id'];
 
     public function vendor()
