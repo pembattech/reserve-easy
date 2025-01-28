@@ -20,4 +20,9 @@ class Vendor extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    public function vendorUniqId()
+    {
+        return $this->hasOne(vendor_uniqid::class, 'vendor_id', 'id');
+    }
 }

@@ -25,8 +25,6 @@ class ClientController extends Controller
 
         $otp = random_int(10000, 99999);
 
-        Session::put('generated_otp', $otp);
-
         Client::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -34,30 +32,24 @@ class ClientController extends Controller
             'OPT' => $otp,
         ]);
 
-        // Send the OTP as JSON response
-        return response()->json(['otp' => $otp]);
+        return response()->json(['otp' => $otp, 'request' => $request->all()]);
     }
 
     public function validateOtp(Request $request)
     {
         $request->validate([
-            'otp' => 'required|digits:5', // Ensure OTP is a 5-digit number
+            'otp' => 'required|digits:5',
             'contact' => 'required|string|max:15',
         ]);
 
-        // Retrieve the client record based on the email (or contact, whichever is available)
         $client = Client::where('contact', $request->contact)->first();
 
-        // Check if the client exists and the OTP matches
         if ($client && $client->OPT == $request->otp) {
-            
             $client->update(['is_valid' => true]);
 
-            
             return response()->json(['success' => true, 'message' => 'OTP validated successfully!']);
         } else {
             return response()->json(['success' => false, 'message' => 'Invalid OTP. Please try again.']);
         }
     }
-
 }

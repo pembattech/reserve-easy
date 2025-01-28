@@ -1,7 +1,7 @@
     <!-- Form Card -->
     <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
         <!-- Header -->
-        <div class="bg-blue-600 px-8 py-6 animate-slide-up">
+        <div class="bg-gray-800 px-8 py-6 animate-slide-up">
             <h1 class="text-2xl font-bold text-white">Add New Booking</h1>
             <p class="text-blue-100 mt-2">Please fill in your booking details</p>
         </div>

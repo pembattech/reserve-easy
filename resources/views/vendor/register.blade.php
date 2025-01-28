@@ -6,7 +6,7 @@
         <div class="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
             <h1 class="text-2xl font-bold text-gray-900 mb-6 text-center">Vendor Register</h1>
 
-            <form action="{{ url('vendor/register') }}" method="POST">
+            <form action="{{ route('vendor.register') }}" method="POST">
                 @csrf
                 <div class="mb-4">
                     <label for="name" class="block text-sm font-medium text-gray-700">Name</label>

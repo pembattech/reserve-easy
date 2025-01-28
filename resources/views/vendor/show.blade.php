@@ -5,7 +5,7 @@
         <!-- Header -->
         <header class="flex justify-between items-center mb-8">
             <h1 class="text-3xl font-semibold">
-                Welcome, {{ Auth::check() ? Auth::user()->name : 'Guest' }}
+                Welcome, {{ Auth::user()->name}} <span class="text-slate-600 text-base">( {{ $vendor->vendorUniqId->unique_id }} )</span>
             </h1>
             {{-- <button onclick="location.href='{{ route('#') }}'" 
                     class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">

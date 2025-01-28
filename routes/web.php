@@ -24,7 +24,7 @@ use App\Http\Controllers\VendorController;
 
 Route::prefix('vendor')->group(function () {
     Route::get('/register', [VendorAuthController::class, 'showRegisterForm'])->name('vendor.register');
-    Route::post('/register', [VendorAuthController::class, 'register']);
+    Route::post('/register', [VendorAuthController::class, 'register'])->name('vendor.register');
     Route::get('/login', [VendorAuthController::class, 'showLoginForm'])->name('vendor.login');
     Route::post('/login', [VendorAuthController::class, 'login']);
     Route::post('/logout', [VendorAuthController::class, 'logout'])->name('vendor.logout');
@@ -41,7 +41,7 @@ Route::middleware('auth:vendor')->group(function () {
 });
 
 Route::prefix('booking')->group(function () {
-    Route::get('/onlinebooking/{vendor}', [BookingController::class, 'onlinebooking']);
+    Route::get('/onlinebooking', [BookingController::class, 'onlinebooking']);
     Route::get('/client', [ClientController::class, 'client']);
     Route::post('/clientstore', [ClientController::class, 'client_store'])->name('booking.clientstore');
     Route::post('/validate-otp', [ClientController::class, 'validateOtp'])->name('booking.otpvalidate');

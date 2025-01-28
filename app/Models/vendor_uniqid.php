@@ -13,8 +13,9 @@ class vendor_uniqid extends Model
 
     protected $fillable = ['vendor_id', 'unique_id'];
 
-    public function vendor()
-    {
-        return $this->belongsTo(Vendor::class);
-    }
+     // Define the reverse relationship
+     public function vendor()
+     {
+         return $this->belongsTo(Vendor::class, 'vendor_id');
+     }
 }
