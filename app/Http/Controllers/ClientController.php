@@ -32,7 +32,7 @@ class ClientController extends Controller
             'OPT' => $otp,
         ]);
 
-        return response()->json(['otp' => $otp, 'request' => $request->all()]);
+        return response()->json(['otp' => $otp]);
     }
 
     public function validateOtp(Request $request)

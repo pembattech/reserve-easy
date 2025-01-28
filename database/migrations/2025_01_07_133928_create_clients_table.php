@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -13,11 +12,11 @@ return new class extends Migration
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
-            $table->string('name');               // Name of the client
-            $table->string('email')->unique();    // Email of the client, unique
-            $table->string('contact');            // Contact number
-            $table->string('OPT')->nullable();    // Optional field, can be null
-            $table->boolean('is_valid')->default(false); // Boolean field, defaults to false
+            $table->string('name');
+            $table->string('email');
+            $table->string('contact');
+            $table->string('OPT')->nullable();
+            $table->boolean('is_valid')->default(false);
             $table->timestamps();
         });
     }
