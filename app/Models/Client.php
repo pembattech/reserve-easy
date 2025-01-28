@@ -16,4 +16,12 @@ class Client extends Model
         'OPT',
         'is_valid',
     ];
+
+     /**
+     * Get the bookings for the client.
+     */
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
 }

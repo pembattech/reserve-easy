@@ -25,4 +25,12 @@ class Vendor extends Authenticatable
     {
         return $this->hasOne(vendor_uniqid::class, 'vendor_id', 'id');
     }
+
+    /**
+     * Get the bookings for the vendor.
+     */
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
 }

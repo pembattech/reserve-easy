@@ -155,7 +155,6 @@
                 e.preventDefault();
 
                 var formData = $(this).serialize();
-                console.log(formData);
 
                 $.ajax({
                     url: "{{ route('booking.clientstore') }}",
@@ -199,6 +198,10 @@
                             $('#otpPopupOverlay').fadeOut();
                             $('#otpPopup').fadeOut();
                             alert(response.success);
+
+                            // submitting the final booking
+                            submitBookingForm(contact);
+
                         } else {
                             alert(response.message);
                         }
@@ -209,5 +212,57 @@
                     }
                 });
             });
+
+            // Function to get query parameters from the URL
+            function getQueryParams() {
+                const urlParams = new URLSearchParams(window.location.search);
+                return {
+                    n: urlParams.get('n'),
+                    booking_date: urlParams.get('booking_date'),
+                    shift: urlParams.get('shift'),
+                    guest: urlParams.get('guest'),
+                    type: urlParams.get('type')
+                };
+            }
+
+            function submitBookingForm(client_contactnum) {
+
+                const queryParams = getQueryParams();
+
+                // Collect form data along with query parameters
+                var formData = {
+                    ...queryParams,
+                    client_contactnum: parseInt(client_contactnum, 10),
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+
+                };
+                console.log(formData);
+
+                $.ajax({
+                    url: '/booking/book', // The route where form data will be submitted
+                    method: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        console.log('Booking successfully submitted:', response);
+                        alert('Booking has been confirmed!');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error submitting the booking:', error);
+                        console.error('Status:', status);
+                        console.error('Response:', xhr
+                        .responseText); // Prints the full response from the server
+
+                        // If the server returns validation errors, you can parse and display them
+                        var response = JSON.parse(xhr.responseText);
+                        if (response.errors) {
+                            for (var field in response.errors) {
+                                console.error(field + ': ' + response.errors[field].join(', '));
+                            }
+                        }
+
+                    }
+                });
+            }
+
         });
     </script>

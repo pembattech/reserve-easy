@@ -89,19 +89,4 @@
         </section>
     </main>
 
-    <script>
-        function storeBookingData(bookingData) {
-            localStorage.setItem('booking', JSON.stringify(bookingData));
-        }
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const bookingData = [{
-            booking_date: urlParams.get('booking_date'),
-            shift: urlParams.get('shift'),
-            guest: urlParams.get('guest'),
-            type: urlParams.get('type'),
-        }];
-
-        storeBookingData(bookingData);
-    </script>
 </x-guest-layout>

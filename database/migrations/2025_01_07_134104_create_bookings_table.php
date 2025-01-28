@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -17,7 +16,9 @@ return new class extends Migration
             $table->foreignId('client_id')->constrained('clients')->onDelete('cascade'); // Foreign key to clients table
             $table->date('booking_date');
             $table->integer('guest');
-            $table->string('status')->default('pending'); // pending, confirmed, canceled
+            $table->enum('shift', ['morning', 'evening', 'whole_day']); // Shift options: morning, evening, whole day
+            $table->enum('type', ['wedding', 'birthday', 'corporate_event', 'other']); // Type options: wedding, birthday, corporate_event, other
+            $table->string('status')->default('pending'); // Status: pending, confirmed, canceled
             $table->timestamps();
         });
     }
