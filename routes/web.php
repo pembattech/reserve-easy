@@ -46,6 +46,9 @@ Route::prefix('booking')->group(function () {
     Route::post('/clientstore', [ClientController::class, 'client_store'])->name('booking.clientstore');
     Route::post('/validate-otp', [ClientController::class, 'validateOtp'])->name('booking.otpvalidate');
     Route::post('/book', [BookingController::class, 'store'])->name('booking.store');
+    Route::get('/get_booking_info/{booking_id}', [BookingController::class, 'get_booking_info'])->name('booking.get_booking_info');
+    Route::post('/update-booking-status', [BookingController::class, 'updateStatus']);
+
 
 
 });

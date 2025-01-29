@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\Client;
 use App\Models\vendor_uniqid;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BookingController extends Controller
 {
@@ -80,4 +81,36 @@ class BookingController extends Controller
             'booking' => $booking,
         ], 201);
     }
+
+    public function get_booking_info($booking_id)
+    {
+
+        $vendor_id = auth('vendor')->user()->id;
+
+        $booking_detail = Booking::with('client')
+            ->where('id', $booking_id)
+            ->first();
+
+        if (!$booking_detail) {
+            return response()->json(['message' => 'Booking not found'], 404);
+        }
+
+        if ($vendor_id != $booking_detail->vendor_id) {
+            return response()->json(['message' => 'Vendor not found'], 404);
+        }
+
+        return response()->json(['booking_detail' => $booking_detail]);
+    }
+
+    public function updateStatus(Request $request)
+    {
+        $booking = Booking::find($request->id);
+        if ($booking) {
+            $booking->status = $request->status;
+            $booking->save();
+            return response()->json(['message' => 'Status updated successfully']);
+        }
+        return response()->json(['message' => 'Booking not found'], 404);
+    }
+
 }

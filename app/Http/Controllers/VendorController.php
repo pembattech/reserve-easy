@@ -17,13 +17,15 @@ class VendorController extends Controller
 
     public function show()
     {
-        $vendor = auth('vendor')->user();
+        $vendor = auth('vendor')->user()->load('bookings');
         return view('vendor.show', compact('vendor'));
 
     }
 
     public function booking_management() {
-        return view('vendor.booking_mgmt');
+        $vendor = auth('vendor')->user()->load('bookings.client');
+        
+        return view('vendor.booking_mgmt', compact('vendor'));
     }
     public function vendor_profile() {
         return view('vendor.vendor_profile');
