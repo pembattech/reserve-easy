@@ -18,7 +18,9 @@ class VendorController extends Controller
     public function show()
     {
         $vendor = auth('vendor')->user()->load('bookings');
-        return view('vendor.show', compact('vendor'));
+        $recentBookings = $vendor->bookings()->latest()->take(4)->get();
+
+        return view('vendor.show', compact('vendor', 'recentBookings'));
 
     }
 

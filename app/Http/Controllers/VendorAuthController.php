@@ -13,6 +13,10 @@ class VendorAuthController extends Controller
 {
     public function showRegisterForm()
     {
+        if (Auth::guard('vendor')->check()) {
+            return redirect()->route('vendor.dashboard');
+        }
+
         return view('vendor.register');
     }
 
@@ -61,6 +65,10 @@ class VendorAuthController extends Controller
 
     public function showLoginForm()
     {
+        if (Auth::guard('vendor')->check()) {
+            return redirect()->route('vendor.dashboard');
+        }
+        
         return view('vendor.login');
     }
 
