@@ -46,7 +46,7 @@
             </table>
         </div>
 
-        @include('vendor.booking_detail')
+        @include('booking.booking_detail')
     </main>
 
 </x-vendor-layout>

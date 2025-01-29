@@ -40,6 +40,15 @@
                                 class="hover:bg-gray-700 px-4 py-2 rounded block">Profile</a></li>
                         <li><a href="{{ route('vendor.vendor_setting') }}"
                                 class="hover:bg-gray-700 px-4 py-2 rounded block">Settings</a></li>
+                        <li>
+                            <form id="logoutForm" action="{{ route('vendor.logout') }}" method="POST">
+                                @csrf
+                                <button type="submit" class="hover:bg-gray-700 px-4 py-2 rounded block">
+                                    Logout
+                                </button>
+                            </form>
+
+                        </li>
                     </ul>
                 </nav>
             </div>

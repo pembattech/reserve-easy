@@ -1,7 +1,5 @@
 <x-vendor-layout>
 
-    {{ $vendor }}
-
     <!-- Main Content -->
     <main class="flex-grow p-6 bg-white">
         <!-- Header -->

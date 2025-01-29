@@ -25,7 +25,7 @@ class VendorController extends Controller
     public function booking_management() {
         $vendor = auth('vendor')->user()->load('bookings.client');
         
-        return view('vendor.booking_mgmt', compact('vendor'));
+        return view('booking.booking_mgmt', compact('vendor'));
     }
     public function vendor_profile() {
         return view('vendor.vendor_profile');

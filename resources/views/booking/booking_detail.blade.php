@@ -6,6 +6,7 @@
         <p><strong>Client:</strong> <span id="modalClient"></span></p>
         <p><strong>Type:</strong> <span id="modalType"></span></p>
         <p><strong>Shift:</strong> <span id="modalShift"></span></p>
+        <p><strong>Guest:</strong> <span id="modalGuest"></span></p>
 
         <label class="block mt-4 font-semibold">Status:</label>
         <select id="modalStatus" class="border rounded p-2 w-full">
@@ -36,12 +37,12 @@
                 url: "/booking/get_booking_info/" + bookingId,
                 method: "GET",
                 success: function(response) {
-                    console.log(response);
 
                     $("#modalType").text(ucfirst(response.booking_detail.type));
                     $("#modalDate").text(response.booking_detail.booking_date);
                     $("#modalClient").text(ucfirst(response.booking_detail.client.name));
                     $("#modalShift").text(ucfirst(response.booking_detail.shift));
+                    $("#modalGuest").text(response.booking_detail.guest);
                     $("#modalStatus").val(response.booking_detail.status);
 
                     $("#bookingModal").removeClass("hidden");
