@@ -17,11 +17,12 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('address')->nullable();
+            $table->string('phone');
             $table->enum('business_type', ['Event Venue', 'Party Planner', 'Catering Service'])->default('Event Venue');
             $table->text('description')->nullable();
             $table->string('logo')->nullable();
             $table->string('website')->nullable();
-            $table->enum('status', ['active', 'disable'])->default('active');
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
         });
     }

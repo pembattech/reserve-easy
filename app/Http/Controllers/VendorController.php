@@ -26,15 +26,16 @@ class VendorController extends Controller
 
     public function update(Request $request, Vendor $vendor)
     {
-
         $validate_data = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email',
-            'phone' => 'nullable|string|max:20',
+            'address' => 'required|string|max:255',
+            'phone' => 'required|regex:/^\d{10,15}$/',
             'business_type' => 'required|string|in:Event Venue,Party Planner,Catering Service',
             'description' => 'nullable|string',
             // 'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            // 'website' => 'nullable|url',
+            'website' => 'nullable|url',
+            'status' => 'required|string|in:active, inactive'
         ]);
 
         // dd($validate_data);
@@ -43,18 +44,20 @@ class VendorController extends Controller
         $vendor->update([
             'name' => $validate_data['name'],
             'email' => $validate_data['email'],
+            'address' => $validate_data['address'],
             'phone' => $validate_data['phone'],
             'business_type' => $validate_data['business_type'],
             'description' => $validate_data['description'],
             // 'logo' => $validate_data['logo'],
-            // 'website' => $validate_data['website'],
+            'website' => $validate_data['website'],
+            'status' => $validate_data['status']
         ]);
 
-        // // Optionally handle file upload
-        // if ($request->hasFile('logo')) {
-        //     $logoPath = $request->file('logo')->store('logos', 'public');
-        //     $vendor->update(['logo' => $logoPath]);
-        // }
+        // Optionally handle file upload
+        if ($request->hasFile('logo')) {
+            $logoPath = $request->file('logo')->store('logos', 'public');
+            $vendor->update(['logo' => $logoPath]);
+        }
 
         // Redirect back with a success message
         return redirect()->route('vendor.vendor_profile', $vendor)->with('success', 'Profile updated successfully!');

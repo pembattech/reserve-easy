@@ -7,7 +7,7 @@
                 Booking</button>
         </header>
 
-        <div class="bg-white shadow-md rounded-lg max-h-[80vh] overflow-auto">
+        <div class="bg-white shadow-md rounded-lg max-h-[75vh] overflow-auto">
             <table class="w-full">
                 <thead class="bg-gray-100 sticky top-0">
                     <tr>

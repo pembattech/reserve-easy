@@ -29,8 +29,8 @@
 
 
     <div class="bg-gray-100">
-        <div class="flex h-screen">
-            <div class="w-64 bg-gray-800 text-white p-6">
+        <div class="flex">
+            <div class="w-64 bg-gray-800 text-white p-6 sticky top-0 h-screen max-h-screen">
                 <div class="text-center mb-10">
                     <h2 class="text-2xl font-bold">Vendor Platform</h2>
                 </div>
