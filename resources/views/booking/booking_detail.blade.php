@@ -83,5 +83,142 @@
                 }
             });
         });
+
+        // Show the popup
+        $("#openPopup-addbooking").click(function() {
+            $(".error").text("");
+            $("#popup-addbooking").removeClass("hidden");
+        });
+
+        // Hide the popup
+        $("#closePopup-addbooking").click(function() {
+            $("#bookingForm")[0].reset();
+            $(".text-red-500").text("");
+            $("#popup-addbooking").addClass("hidden");
+        });
+
+        $("#bookingForm").submit(function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Clear previous error messages
+            $(".text-red-500").text("");
+
+            // Get form values
+            let name = $("#name").val().trim();
+            let email = $("#email").val().trim();
+            let contact = $("#contact").val().trim();
+            let date = $("#date").val();
+            let shift = $("#shift").val();
+            let guest = $("#guest").val();
+            let type = $("#type").val();
+            let isValid = true;
+
+            // Validate Name
+            if (!name) {
+                $("#nameError").text("Name is required.");
+                isValid = false;
+            }
+
+            // Validate Email
+            let emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+            if (!email.match(emailPattern)) {
+                $("#emailError").text("Enter a valid email.");
+                isValid = false;
+            }
+
+            // Validate Contact Number
+            let phonePattern = /^[0-9]{10}$/;
+            if (!contact.match(phonePattern)) {
+                $("#contactError").text("Enter a valid 10-digit phone number.");
+                isValid = false;
+            }
+
+            // Validate Booking Date
+            if (!date) {
+                $("#dateError").text("Booking date is required.");
+                isValid = false;
+            }
+
+            // Validate Shift
+            if (!shift) {
+                $("#shiftError").text("Please select a shift.");
+                isValid = false;
+            }
+
+            // Validate Guest Count
+            if (!guest || guest < 1) {
+                $("#guestError").text("Guest number must be at least 1.");
+                isValid = false;
+            }
+
+            // Validate Type
+            if (!type) {
+                $("#typeError").text("Please select a booking type.");
+                isValid = false;
+            }
+
+            // If form is valid, submit via AJAX
+            if (isValid) {
+
+                let formData = $(this).serialize();
+                let csrfToken = $('meta[name="csrf-token"]').attr("content");
+
+                $.ajax({
+                    url: "/booking/manual-book", // Replace with your backend URL
+                    type: "POST",
+                    data: formData,
+                    headers: {
+                        "X-CSRF-TOKEN": csrfToken, // Add CSRF token to headers
+                    },
+                    success: function(response) {
+                        if (response.status === 'true') {
+                            let booking = response.booking;
+
+                            // Convert first letter to uppercase
+                            let eventType = ucfirst(booking.type);
+                            let shiftType = booking.shift;
+                            let bookingStatus = ucfirst(booking.status);
+
+                            // Determine status label color
+                            let statusClass = (booking.status === 'confirmed') ?
+                                'bg-green-100 text-green-800' :
+                                (booking.status === 'pending') ?
+                                'bg-yellow-100 text-yellow-800' :
+                                'bg-gray-100 text-gray-800';
+
+                            // Create new row
+                            let newRow = `
+                                <tr class="border-b">
+                                    <td class="px-6 py-4">${eventType}</td>
+                                    <td class="px-6 py-4">${booking.booking_date}</td>
+                                    <td class="px-6 py-4">${booking.client_name}</td>
+                                    <td class="px-6 py-4">${shiftType}</td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-2 py-1 ${statusClass} rounded-full text-xs">
+                                            ${bookingStatus}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <button class="text-blue-500 hover:text-blue-700 mr-3 open-modal" data-id="${booking.id}">
+                                            View
+                                        </button>
+                                    </td>
+                                </tr>
+                            `;
+                            // Append new row to the table
+                            $("table tbody").append(newRow);
+
+                            // Reset the form after successful submission
+                            $("#bookingForm")[0].reset();
+
+                            $("#popup-addbooking").addClass("hidden");
+                        }
+                    },
+                    error: function(error) {
+                        console.log(error); // Handle errors
+                    }
+                });
+            }
+        });
     });
 </script>

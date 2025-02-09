@@ -14,9 +14,14 @@ return new class extends Migration
         Schema::create('vendors', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('location')->nullable();
             $table->string('email')->unique();
             $table->string('password');
+            $table->string('address')->nullable();
+            $table->enum('business_type', ['Event Venue', 'Party Planner', 'Catering Service'])->default('Event Venue');
+            $table->text('description')->nullable();
+            $table->string('logo')->nullable();
+            $table->string('website')->nullable();
+            $table->enum('status', ['active', 'disable'])->default('active');
             $table->timestamps();
         });
     }

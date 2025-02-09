@@ -20,6 +20,14 @@
 </head>
 
 <body class="font-sans antialiased">
+
+    @if (session('success'))
+        <div class="text-green-500 bg-green-100 p-4 rounded">
+            {{ session('success') }}
+        </div>
+    @endif
+
+
     <div class="bg-gray-100">
         <div class="flex h-screen">
             <div class="w-64 bg-gray-800 text-white p-6">

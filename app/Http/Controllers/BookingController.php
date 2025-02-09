@@ -42,7 +42,7 @@ class BookingController extends Controller
 
         $validatedData = $request->validate([
             'n' => 'required|string',
-            'client_contactnum' => 'required|regex:/^\d{10,15}$/', // Accepts 10 to 15 digits
+            'client_contactnum' => 'required|regex:/^\d{10,15}$/',
             'booking_date' => 'required|date|after_or_equal:today',
             'guest' => 'required|integer|min:1',
             'shift' => 'required|in:morning,evening,whole_day',
@@ -81,6 +81,63 @@ class BookingController extends Controller
             'booking' => $booking,
         ], 201);
     }
+
+    public function manual_booking(Request $request)
+    {
+        try {
+
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email',
+                'contact' => 'required|regex:/^\d{10,15}$/',
+                'booking_date' => 'required|date|after_or_equal:today',
+                'guest' => 'required|integer|min:1',
+                'shift' => 'required|in:morning,evening,whole_day',
+                'type' => 'required|in:wedding,birthday,corporate_event,other',
+            ]);
+
+            $vendor_id = auth('vendor')->id();
+
+            $client = Client::create([
+                'name' => $validatedData['name'],
+                'email' => $validatedData['email'],
+                'contact' => $validatedData['contact'],
+            ]);
+
+            $booking = Booking::create([
+                'vendor_id' => $vendor_id,
+                'client_id' => $client->id,
+                'booking_date' => $validatedData['booking_date'],
+                'shift' => $validatedData['shift'],
+                'guest' => $validatedData['guest'],
+                'type' => $validatedData['type'],
+                'status' => 'pending',
+            ]);
+
+            return response()->json([
+                'message' => 'Booking created successfully.',
+                'booking' => [
+                    'id' => $booking->id,
+                    'vendor_id' => $booking->vendor_id,
+                    'client_id' => $booking->client_id,
+                    'client_name' => $client->name,
+                    'booking_date' => $booking->booking_date,
+                    'shift' => $booking->shift,
+                    'guest' => $booking->guest,
+                    'type' => $booking->type,
+                    'status' => $booking->status,
+                ],
+                'status' => 'true'
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Booking creation failed. Please try again.',
+                'error' => $e->getMessage(),
+                'status' => 'false'
+            ], 500);
+        }
+    }
+
 
     public function get_booking_info($booking_id)
     {
