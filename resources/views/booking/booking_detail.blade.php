@@ -74,12 +74,37 @@
                     status: newStatus
                 },
                 success: function(response) {
-                    // TODO: Send a update to the client.
-                    alert("Status updated successfully!");
-                    location.reload();
+                    if (response.status == 'success') {
+
+                        // Update the status badge dynamically
+                        let row = $("#booking-row-" + bookingId);
+                        let statusCell = row.find(".status-column");
+
+                        let statusClass = "";
+                        if (newStatus === "confirmed") {
+                            statusClass = "bg-green-100 text-green-800";
+                        } else if (newStatus === "pending") {
+                            statusClass = "bg-yellow-100 text-yellow-800";
+                        } else {
+                            statusClass = "bg-gray-100 text-gray-800";
+                        }
+
+                        // Replace the status text
+                        statusCell.html(
+                            `<span class="px-2 py-1 ${statusClass} rounded-full text-xs">${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}</span>`
+                        );
+
+                        // TODO: Send a update to the client.
+
+                        showAlert(response.message, 'bg-green-50', 'text-green-800');
+                        // location.reload();
+                    } else {
+                        showAlert(response.message, 'bg-red-50', 'text-red-800');
+                    }
                 },
                 error: function() {
-                    alert("Something went wrong.");
+                    showAlert('An error occurred. Please try again.', 'bg-red-50',
+                        'text-red-800');
                 }
             });
         });
@@ -164,18 +189,25 @@
                 let csrfToken = $('meta[name="csrf-token"]').attr("content");
 
                 $.ajax({
-                    url: "/booking/manual-book", // Replace with your backend URL
+                    url: "/booking/manual-book",
                     type: "POST",
                     data: formData,
                     headers: {
-                        "X-CSRF-TOKEN": csrfToken, // Add CSRF token to headers
+                        "X-CSRF-TOKEN": csrfToken,
                     },
                     success: function(response) {
-                        if (response.status === 'true') {
+                        if (response.status === 'success') {
                             let booking = response.booking;
 
                             // Convert first letter to uppercase
                             let eventType = ucfirst(booking.type);
+                            let bookingDate = new Date(booking.booking_date)
+                                .toLocaleDateString('en-US', {
+                                    // weekday: 'long', // e.g., Monday
+                                    year: 'numeric', // e.g., 2025
+                                    month: 'short', // e.g., Feb
+                                    day: '2-digit' // e.g., 10
+                                });
                             let shiftType = booking.shift;
                             let bookingStatus = ucfirst(booking.status);
 
@@ -190,7 +222,7 @@
                             let newRow = `
                                 <tr class="border-b">
                                     <td class="px-6 py-4">${eventType}</td>
-                                    <td class="px-6 py-4">${booking.booking_date}</td>
+                                    <td class="px-6 py-4">${bookingDate}</td>
                                     <td class="px-6 py-4">${booking.client_name}</td>
                                     <td class="px-6 py-4">${shiftType}</td>
                                     <td class="px-6 py-4">
@@ -206,16 +238,22 @@
                                 </tr>
                             `;
                             // Append new row to the table
-                            $("table tbody").append(newRow);
+                            $("table tbody").prepend(newRow);
 
                             // Reset the form after successful submission
                             $("#bookingForm")[0].reset();
 
+                            showAlert(response.message, 'bg-green-50', 'text-green-800');
+
                             $("#popup-addbooking").addClass("hidden");
+                        } else {
+                            showAlert(response.message, 'bg-red-50', 'text-red-800');
                         }
                     },
                     error: function(error) {
                         console.log(error); // Handle errors
+                        showAlert('An error occurred. Please try again.', 'bg-red-50',
+                            'text-red-800');
                     }
                 });
             }

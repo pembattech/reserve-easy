@@ -66,7 +66,12 @@ class VendorController extends Controller
 
     public function booking_management()
     {
-        $vendor = auth('vendor')->user()->load('bookings.client');
+        $vendor = auth('vendor')->user()->load([
+            'bookings' => function ($query) {
+                $query->orderBy('created_at', 'desc'); // Sort newest first
+            },
+            'bookings.client'
+        ]);
 
         return view('booking.booking_mgmt', compact('vendor'));
     }

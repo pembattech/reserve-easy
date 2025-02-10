@@ -127,13 +127,13 @@ class BookingController extends Controller
                     'type' => $booking->type,
                     'status' => $booking->status,
                 ],
-                'status' => 'true'
+                'status' => 'success'
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Booking creation failed. Please try again.',
                 'error' => $e->getMessage(),
-                'status' => 'false'
+                'status' => 'error'
             ], 500);
         }
     }
@@ -165,9 +165,9 @@ class BookingController extends Controller
         if ($booking) {
             $booking->status = $request->status;
             $booking->save();
-            return response()->json(['message' => 'Status updated successfully']);
+            return response()->json(['message' => 'Status updated successfully', 'status' => 'success']);
         }
-        return response()->json(['message' => 'Booking not found'], 404);
+        return response()->json(['message' => 'Booking not found', 'status' => 'error'], 404);
     }
 
 }
