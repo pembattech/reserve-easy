@@ -21,13 +21,13 @@
                 </thead>
                 <tbody>
                     @foreach ($vendor->bookings as $booking)
-                        <tr class="border-b">
+                        <tr class="border-b" id="booking-row-{{$booking->id}}">
                             <td class="px-6 py-4">{{ ucwords(str_replace('_', ' ', $booking->type)) }}</td>
                             <td class="px-6 py-4">{{ \Carbon\Carbon::parse($booking->booking_date)->format('M d, Y') }}
                             </td>
                             <td class="px-6 py-4">{{ $booking->client->name }}</td>
                             <td class="px-6 py-4">{{ str_replace('_', ' ', $booking->shift) }}</td>
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4 status-column">
                                 @if ($booking->status == 'confirmed')
                                     <span
                                         class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Confirmed</span>

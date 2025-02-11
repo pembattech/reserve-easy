@@ -76,8 +76,11 @@
                 success: function(response) {
                     if (response.status == 'success') {
 
+                        console.log(newStatus)
+
                         // Update the status badge dynamically
                         let row = $("#booking-row-" + bookingId);
+
                         let statusCell = row.find(".status-column");
 
                         let statusClass = "";
@@ -97,7 +100,9 @@
                         // TODO: Send a update to the client.
 
                         showAlert(response.message, 'bg-green-50', 'text-green-800');
-                        // location.reload();
+
+                        $("#bookingModal").addClass("hidden");
+                        
                     } else {
                         showAlert(response.message, 'bg-red-50', 'text-red-800');
                     }

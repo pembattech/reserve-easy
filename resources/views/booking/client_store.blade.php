@@ -289,6 +289,9 @@
                         alert(response.message);
                         $('#otpPopupOverlay').fadeOut();
                         $('#otpPopup').fadeOut();
+
+                        submitBookingForm(contact);
+                        
                     } else {
                         console.log('f')
                         $otpErrorMessage.text(response.message).removeClass('hidden');
