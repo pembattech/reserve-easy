@@ -99,7 +99,7 @@
 <div id="otpPopup"
     class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
        w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 hidden z-50">
-    <form method="POST" class="space-y-6" id="otpForm">
+    <form method="POST" class="space-y-6" id="otpForm" novalidate>
         @csrf
 
         <!-- Header -->
@@ -128,7 +128,7 @@
             </div>
 
             <!-- Validate Button -->
-            <button type="button" id="validateOtpButton"
+            <button type="submit" id="validateOtpButton"
                 class="w-full inline-flex justify-center items-center px-6 py-3 
                     bg-blue-600 hover:bg-blue-700 
                     text-white font-medium rounded-lg
@@ -176,12 +176,15 @@
         // Enable/disable the Validate OTP button based on input validity
         $otpInput.on('input', function() {
             const otpValue = $otpInput.val();
-            // Check if input is exactly 5 digits
-            if (otpValue.length === 5 && /^[0-9]{5}$/.test(otpValue)) {
+            // Check if input matches the alphanumeric format (e.g., 6 characters: uppercase, lowercase, or digits)
+            const otpPattern = /^[A-Za-z0-9]{5}$/; // Match 6 characters (letters + digits)
+
+            if (otpPattern.test(otpValue)) {
                 $validateOtpButton.prop('disabled', false);
                 $otpErrorMessage.addClass('hidden'); // Hide error message
             } else {
                 $validateOtpButton.prop('disabled', true);
+                $otpErrorMessage.removeClass('hidden'); // Show error message if invalid
             }
         });
 
@@ -242,15 +245,14 @@
                     data: formData,
                     success: function(response) {
                         console.log(response)
-                        if (response.otp) {
+                        if (response.status == 'success') {
                             // Store the contact in localStorage
                             const contact = $('#contact').val();
                             localStorage.setItem('contact', contact);
-
-                            // Display the OTP popup
-                            $('#otpPopupOverlay').fadeIn();
-                            $('#otpPopup').fadeIn();
                         }
+                        // Display the OTP popup
+                        $('#otpPopupOverlay').fadeIn();
+                        $('#otpPopup').fadeIn();
                     },
                     error: function(xhr, status, error) {
                         console.error("Error: " + error);
@@ -259,47 +261,45 @@
             }
         });
 
-        // Handle OTP validation (same as before)
-        $('#validateOtpButton').on('click', function() {
-            const enteredOtp = $('#otpInput').val();
+        $('#otpForm').on('submit', function(e) {
+            e.preventDefault();
+
+            const otpValue = $('#otpInput').val().trim();
             const contact = localStorage.getItem('contact');
+            const $otpErrorMessage = $('#otpErrorMessage');
+            const $otpForm = $(this);
 
-            const otpValue = enteredOtp;
-            if (!/^[0-9]{5}$/.test(otpValue)) {
-                // Show error message
+            if (!/^[A-Za-z0-9]{5}$/.test(otpValue)) {
                 $otpErrorMessage.removeClass('hidden');
-
-            } else {
-                $otpErrorMessage.addClass('hidden');
-
-                $.ajax({
-                    url: "{{ route('booking.otpvalidate') }}",
-                    method: "POST",
-                    data: {
-                        otp: enteredOtp,
-                        contact: contact,
-                        _token: $('meta[name="csrf-token"]').attr('content'),
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            $('#otpPopupOverlay').fadeOut();
-                            $('#otpPopup').fadeOut();
-                            alert(response.success);
-
-                            submitBookingForm(contact);
-
-                        } else {
-                            alert(response.message);
-                        }
-
-                        $otpForm[0].reset();
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Error validating OTP:", error);
-                        alert("An error occurred while validating the OTP.");
-                    }
-                });
+                return;
             }
+
+            $otpErrorMessage.addClass('hidden');
+
+            $.ajax({
+                url: "{{ route('booking.otpvalidate') }}",
+                method: "POST",
+                data: {
+                    otp: otpValue,
+                    contact: contact,
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                },
+                success: function(response) {
+                    if (response.success === true) {
+                        alert(response.message);
+                        $('#otpPopupOverlay').fadeOut();
+                        $('#otpPopup').fadeOut();
+                    } else {
+                        console.log('f')
+                        $otpErrorMessage.text(response.message).removeClass('hidden');
+                    }
+                    $otpForm[0].reset();
+                },
+                error: function(xhr) {
+                    console.error("Error validating OTP:", xhr.responseText);
+                    alert("An error occurred while validating the OTP.");
+                }
+            });
         });
 
         function submitBookingForm(client_contactnum) {
@@ -316,8 +316,12 @@
                 method: 'POST',
                 data: formData,
                 success: function(response) {
+                    console.log(response);
                     console.log('Booking successfully submitted:', response);
                     alert('Booking has been confirmed!');
+
+                    window.location.href = response.booking.vendor_website;
+
                 },
                 error: function(xhr, status, error) {
                     console.error('Error submitting the booking:', error);

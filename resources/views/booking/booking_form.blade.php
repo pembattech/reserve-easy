@@ -71,8 +71,8 @@
                     </div>
                 </div>
 
-                <!-- Back to Form Button -->
-                <a href="{{ url()->previous() }}"
+                <!-- Back to website Button -->
+                <a href="{{ $vendor->website }}"
                     class="mt-6 w-full inline-flex items-center justify-center border border-gray-300 text-gray-900 bg-white focus:ring-offset-2 transition-colors duration-200 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 ">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

@@ -58,9 +58,11 @@ class BookingController extends Controller
 
         $vendor_id = $vendorUniqId->vendor->id;
 
-        $client_id = Client::where('contact', $validatedData['client_contactnum'])
+        $client = Client::where('contact', $validatedData['client_contactnum'])
             ->where('is_valid', true)
-            ->first()->id;
+            ->first();
+
+        $client_id = $client->id;
 
         if (!$client_id) {
             return response()->json(['error' => 'Client not found.'], 404);
@@ -78,7 +80,15 @@ class BookingController extends Controller
 
         return response()->json([
             'message' => 'Booking created successfully.',
-            'booking' => $booking,
+            'booking' => [
+                'client_name' => $client->name,
+                'booking_date' => $booking->booking_date,
+                'shift' => $booking->shift,
+                'guest' => $booking->guest,
+                'type' => $booking->type,
+                'status' => $booking->status,
+                'vendor_website' => $booking->vendor()->first()->website
+            ],
         ], 201);
     }
 
@@ -117,9 +127,6 @@ class BookingController extends Controller
             return response()->json([
                 'message' => 'Booking created successfully.',
                 'booking' => [
-                    'id' => $booking->id,
-                    'vendor_id' => $booking->vendor_id,
-                    'client_id' => $booking->client_id,
                     'client_name' => $client->name,
                     'booking_date' => $booking->booking_date,
                     'shift' => $booking->shift,

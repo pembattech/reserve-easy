@@ -23,33 +23,72 @@ class ClientController extends Controller
             'contact' => 'required|string|max:15',
         ]);
 
-        $otp = random_int(10000, 99999);
+        // Check if client already exists
+        $existingClient = Client::where('contact', $request->contact)->first();
 
-        Client::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'contact' => $request->contact,
-            'OPT' => $otp,
-        ]);
+        if ($existingClient) {
 
-        return response()->json(['otp' => $otp]);
+            // Check if OTP was recently sent
+            if ($existingClient->created_at >= now()->subMinutes(5) && $existingClient->is_valid == false) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'OTP already sent. Please wait before requesting again.'
+                ]);
+            }
+
+        } else {
+            $otp = $this->generateAlphanumericOTP(5);
+
+            Client::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'contact' => $request->contact,
+                'OPT' => $otp,
+                'is_valid' => false,
+            ]);
+
+            return response()->json(['otp' => $otp, 'message' => 'OTP sent successfully.', 'status' => 'success']);
+        }
     }
 
     public function validateOtp(Request $request)
     {
-        $request->validate([
-            'otp' => 'required|digits:5',
+        $validate_data = $request->validate([
+            'otp' => 'required|regex:/^[A-Za-z0-9]{5}$/',
             'contact' => 'required|string|max:15',
         ]);
 
-        $client = Client::where('contact', $request->contact)->first();
+        $client = Client::where('contact', $validate_data['contact'])->first();
 
-        if ($client && $client->OPT == $request->otp) {
-            $client->update(['is_valid' => true]);
+        if ($client) {
+            // Check if OTP has already been used (is_valid is true)
+            if ($client->is_valid) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'OTP has already been used. Please request a new one if needed.'
+                ]);
+            }
 
-            return response()->json(['success' => true, 'message' => 'OTP validated successfully!']);
-        } else {
-            return response()->json(['success' => false, 'message' => 'Invalid OTP. Please try again.']);
+            if ($client->OPT === $validate_data['otp']) {
+                $client->update(['is_valid' => true]);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'OTP validated successfully!'
+                ]);
+            }
         }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Invalid OTP. Please try again.'
+        ]);
     }
+
+    function generateAlphanumericOTP($length)
+    {
+        $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        return substr(str_shuffle(str_repeat($characters, $length)), 0, $length);
+    }
+
 }
