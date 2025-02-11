@@ -235,6 +235,7 @@
                                             ${bookingStatus}
                                         </span>
                                     </td>
+                                    <td class="px-6 py-4">${booking.booking_source}</td>
                                     <td class="px-6 py-4">
                                         <button class="text-blue-500 hover:text-blue-700 mr-3 open-modal" data-id="${booking.id}">
                                             View

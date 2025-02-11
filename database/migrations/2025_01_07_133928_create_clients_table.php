@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->string('name');
             $table->string('email');
             $table->string('contact');
+            $table->string('booking_source');
             $table->string('OPT')->nullable();
             $table->boolean('is_valid')->default(false);
             $table->timestamps();

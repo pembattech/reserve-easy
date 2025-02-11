@@ -25,11 +25,10 @@ class ClientController extends Controller
 
         // Check if client already exists
         $existingClient = Client::where('contact', $request->contact)->first();
-
         if ($existingClient) {
 
             // Check if OTP was recently sent
-            if ($existingClient->created_at >= now()->subMinutes(5) && $existingClient->is_valid == false) {
+            if ($existingClient->created_at >= now()->subMinutes(5) && $existingClient->is_valid == false && $existingClient->booking_source == 'online') {
                 return response()->json([
                     'status' => 'success',
                     'message' => 'OTP already sent. Please wait before requesting again.'
@@ -43,6 +42,7 @@ class ClientController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'contact' => $request->contact,
+                'booking_source' => 'online',
                 'OPT' => $otp,
                 'is_valid' => false,
             ]);

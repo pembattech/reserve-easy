@@ -13,6 +13,7 @@ class Client extends Model
         'name',
         'email',
         'contact',
+        'booking_source',
         'OPT',
         'is_valid',
     ];

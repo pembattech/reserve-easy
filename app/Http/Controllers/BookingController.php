@@ -112,6 +112,8 @@ class BookingController extends Controller
                 'name' => $validatedData['name'],
                 'email' => $validatedData['email'],
                 'contact' => $validatedData['contact'],
+                'booking_source' => 'manual',
+                'is_valid' => true,
             ]);
 
             $booking = Booking::create([
@@ -133,6 +135,7 @@ class BookingController extends Controller
                     'guest' => $booking->guest,
                     'type' => $booking->type,
                     'status' => $booking->status,
+                    'booking_source' => 'manual',
                 ],
                 'status' => 'success'
             ], 201);
